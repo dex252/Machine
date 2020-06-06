@@ -65,6 +65,7 @@ namespace Machine.Example.LinearRegression
             return price.Price*100_000;
         }
         /// <summary>
+        /// R-квадрат, коэффициент детерминации. Чем ближе к 1.00, тем выше качество.
         /// https://docs.microsoft.com/ru-ru/dotnet/machine-learning/resources/metrics
         /// </summary>
         /// <returns></returns>
@@ -72,14 +73,16 @@ namespace Machine.Example.LinearRegression
         {
             if (testHouseData != null)
             {
-                Console.WriteLine($"R^2: {metrics.RSquared:0.##}");
-                return metrics.RSquared;
+                var rSquared = metrics.RSquared;
+                Console.WriteLine($"R^2: {rSquared:0.##}");
+                return rSquared;
             }
 
             throw new NotImplementedException();
         }
 
         /// <summary>
+        /// Среднеквадратичное отклонение. Значения ближе к 0.00 предпочтительнее.
         /// https://docs.microsoft.com/ru-ru/dotnet/machine-learning/resources/metrics
         /// </summary>
         /// <returns></returns>
@@ -87,8 +90,9 @@ namespace Machine.Example.LinearRegression
         {
             if (testHouseData != null)
             {
-                Console.WriteLine($"RMS error: {metrics.RootMeanSquaredError:0.##}");
-                return metrics.RootMeanSquaredError;
+                var rootMeanSquaredError = metrics.RootMeanSquaredError;
+                Console.WriteLine($"RMS error: {rootMeanSquaredError:0.##}");
+                return rootMeanSquaredError;
             }
 
             throw new NotImplementedException();
