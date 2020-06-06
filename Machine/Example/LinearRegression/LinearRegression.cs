@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Machine.Example.LinearRegression.Models;
 using Microsoft.ML;
 using Microsoft.ML.Data;
@@ -12,17 +13,29 @@ namespace Machine.Example.LinearRegression
     public class LinearRegression: AContext
     {
         // 1. Import or create training data
-        readonly HouseData[] houseData = {
-            new HouseData() { Size = 1.1F, Price = 1.2F },
-            new HouseData() { Size = 1.9F, Price = 2.3F },
-            new HouseData() { Size = 2.8F, Price = 3.0F },
-            new HouseData() { Size = 3.4F, Price = 3.7F }
-        };
+        private HouseData[] houseData;
+
+        private HouseData[] testHouseData;
 
         private TransformerChain<RegressionPredictionTransformer<LinearRegressionModelParameters>> model;
-
-        public LinearRegression()
+        private RegressionMetrics metrics;
+        public LinearRegression(HouseData[] houseData)
         {
+            this.houseData = houseData;
+            Learn();
+        }
+
+        public LinearRegression(HouseData[] houseData, HouseData[] testHouseData)
+        {
+            this.houseData = houseData;
+            this.testHouseData = testHouseData;
+            Learn();
+            Metrics();
+        }
+
+        private void Learn()
+        {
+            Console.OutputEncoding = Encoding.UTF8;
             IDataView trainingData = mlContext.Data.LoadFromEnumerable(houseData);
 
             // 2. Specify data preparation and model training pipeline
@@ -34,12 +47,51 @@ namespace Machine.Example.LinearRegression
             model = pipeline.Fit(trainingData);
         }
 
-        public void Prediction(HouseData inputData)
+        private void Metrics()
+        {
+            var testHouseDataView = mlContext.Data.LoadFromEnumerable(testHouseData);
+            var testPriceDataView = model.Transform(testHouseDataView);
+
+            metrics = mlContext.Regression.Evaluate(testPriceDataView, labelColumnName: "Price");
+        }
+
+        public float Prediction(HouseData inputData)
         {
             var size = inputData;
             var price = mlContext.Model.CreatePredictionEngine<HouseData, Prediction>(model).Predict(size);
-           
+            
             Console.WriteLine($"Predicted price for size: {size.Size * 1000} = {price.Price * 100_000:C}");
+
+            return price.Price*100_000;
+        }
+        /// <summary>
+        /// https://docs.microsoft.com/ru-ru/dotnet/machine-learning/resources/metrics
+        /// </summary>
+        /// <returns></returns>
+        public double EvaluateR2()
+        {
+            if (testHouseData != null)
+            {
+                Console.WriteLine($"R^2: {metrics.RSquared:0.##}");
+                return metrics.RSquared;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// https://docs.microsoft.com/ru-ru/dotnet/machine-learning/resources/metrics
+        /// </summary>
+        /// <returns></returns>
+        public double EvaluateRMS()
+        {
+            if (testHouseData != null)
+            {
+                Console.WriteLine($"RMS error: {metrics.RootMeanSquaredError:0.##}");
+                return metrics.RootMeanSquaredError;
+            }
+
+            throw new NotImplementedException();
         }
     }
 }
