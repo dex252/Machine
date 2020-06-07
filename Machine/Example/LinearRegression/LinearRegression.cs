@@ -21,12 +21,14 @@ namespace Machine.Example.LinearRegression
         private RegressionMetrics metrics;
         public LinearRegression(HouseData[] houseData)
         {
+            mlContext = new MLContext();
             this.houseData = houseData;
             Learn();
         }
 
         public LinearRegression(HouseData[] houseData, HouseData[] testHouseData)
         {
+            mlContext = new MLContext();
             this.houseData = houseData;
             this.testHouseData = testHouseData;
             Learn();

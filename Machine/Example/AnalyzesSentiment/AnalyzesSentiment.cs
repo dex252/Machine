@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Machine.Example.AnalyzesSentiment.Models;
 using Microsoft.ML;
@@ -8,12 +7,16 @@ using Microsoft.ML.Data;
 
 namespace Machine.Example.AnalyzesSentiment
 {
+    /// <summary>
+    /// https://docs.microsoft.com/ru-ru/dotnet/machine-learning/tutorials/sentiment-analysis
+    /// </summary>
     public class AnalyzesSentiment : AContext
     {
         private ITransformer model;
         private CalibratedBinaryClassificationMetrics metrics;
         public AnalyzesSentiment()
         {
+            mlContext = new MLContext();
             DataOperationsCatalog.TrainTestData splitDataView = LoadData();
             BuildAndTrainModel(splitDataView.TrainSet);
             Evaluate(splitDataView.TestSet);
@@ -125,9 +128,8 @@ namespace Machine.Example.AnalyzesSentiment
         /// <returns></returns>
         private DataOperationsCatalog.TrainTestData LoadData()
         {
-            File.WriteAllText(TempPathToData, Machine.Example.AnalyzesSentiment.Resource.yelp_labelled);
-
-            IDataView dataView = mlContext.Data.LoadFromTextFile<SentimentData>(TempPathToData, hasHeader: false);
+            var path = ResourcesPath + "yelp_labelled.txt";
+            IDataView dataView = mlContext.Data.LoadFromTextFile<SentimentData>(path, hasHeader: false);
 
             DataOperationsCatalog.TrainTestData splitDataView = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
 
