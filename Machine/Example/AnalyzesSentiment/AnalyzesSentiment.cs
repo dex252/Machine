@@ -80,7 +80,7 @@ namespace Machine.Example.AnalyzesSentiment
         /// </summary>
         /// <param name="comments"></param>
         /// <returns></returns>
-        public bool[] BulkPrediction(string[] comments)
+        public bool[] BulkPrediction(params string[] comments)
         {
             List<SentimentData> sentiments = new List<SentimentData>();
             foreach (var c in comments)
