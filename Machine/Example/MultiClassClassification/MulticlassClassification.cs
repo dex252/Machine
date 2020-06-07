@@ -13,8 +13,9 @@ namespace Machine.Example.MultiClassClassification
         private ITransformer model;
         private CalibratedBinaryClassificationMetrics metrics;
         private PredictionEngine<GitHubIssue, IssuePrediction> predEngine;
-        public MultiClassClassification()
+        public MultiClassClassification(string path = null)
         {
+            if (path != null) ResourcesPath = path;
             mlContext = new MLContext(seed: 0);
 
             IDataView trainingDataView = mlContext.Data.LoadFromTextFile<GitHubIssue>(ResourcesPath + "issues_test.tsv", hasHeader: true);

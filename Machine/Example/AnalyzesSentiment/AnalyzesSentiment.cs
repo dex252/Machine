@@ -14,8 +14,9 @@ namespace Machine.Example.AnalyzesSentiment
     {
         private ITransformer model;
         private CalibratedBinaryClassificationMetrics metrics;
-        public AnalyzesSentiment()
+        public AnalyzesSentiment(string path = null)
         {
+            if (path != null) ResourcesPath = path;
             mlContext = new MLContext();
             DataOperationsCatalog.TrainTestData splitDataView = LoadData();
             BuildAndTrainModel(splitDataView.TrainSet);
@@ -100,7 +101,7 @@ namespace Machine.Example.AnalyzesSentiment
             foreach (SentimentPrediction prediction in predictedResults)
             {
                 Console.WriteLine($"Sentiment: {prediction.SentimentText} | Prediction: {(Convert.ToBoolean(prediction.Prediction) ? "Positive" : "Negative")} | Probability: {prediction.Probability} ");
-                results[count] = prediction.Prediction;
+                results[count] = Convert.ToBoolean(prediction.Prediction);
                 count++;
             }
 

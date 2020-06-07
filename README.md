@@ -1,5 +1,5 @@
 # Machine (примеры использования ML по документации https://docs.microsoft.com/ru-ru/dotnet/machine-learning/)
 
-- [x] Линейная регрессия
-- [x] Анализ комментариев
-- [x] Классификация запросов к тех поддержке github
+- [x] Линейная регрессия (LinearRegression)
+- [x] Анализ комментариев (AnalyzesSentiment)
+- [x] Классификация запросов к тех поддержке github (MultiClassClassification)
